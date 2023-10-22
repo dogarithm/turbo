@@ -42,7 +42,7 @@ func FromImage(src image.Image, allowDeepClone bool) *Image {
 	default:
 		nv := image.NewRGBA(src.Bounds())
 		draw.Draw(nv, nv.Bounds(), src, image.Point{}, draw.Src)
-		dst.Width, dst.Height, dst.Stride = nv.Rect.Dx(), nv.Rect.Dy(), nv.Stride
+		dst.Width, dst.Height, dst.Stride, dst.Pixels = nv.Rect.Dx(), nv.Rect.Dy(), nv.Stride, nv.Pix
 	}
 
 	return dst
