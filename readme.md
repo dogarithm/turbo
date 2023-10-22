@@ -4,12 +4,7 @@ This is a very thin wrapper around turbojpeg.
 
 Why not use https://github.com/pixiv/go-libjpeg ?
 
-Because go-libjpeg is built to use the libjpeg-compatible API of either libjpeg or
-libjpeg-turbo. That API does not allow one to specify the chroma sub-sampling, so
-you're unable to compress to 4:2:0. That was the sole reason for building this
-package -- to enable compression to 420 chroma sub-sampling.
-
-This wrapper links explicitly to TurboJPEG. There is no fallback to libjpeg.
+It's buggy and generates invalid output (probably due to incorrect use of more complex API).
 
 ### How to use
 
