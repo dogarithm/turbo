@@ -42,9 +42,8 @@ func TestCompress(t *testing.T) {
 	jpg, err := Compress(raw1, params)
 	t.Logf("Encode return: %v, %v", len(jpg), err)
 	raw2, err := Decompress(jpg)
-	t.Logf("Decode return: %v x %v, %v, %v, %v", raw2.Width, raw2.Height, raw2.Stride, len(raw2.Pixels), err)
-	assert.Equal(t, &w, &raw2.Width, "Width same")
-	assert.Equal(t, &h, &raw2.Height, "Height same")
-	assert.Equal(t, &raw1.Stride, &raw2.Stride, "Stride same")
-	//ioutil.WriteFile("test.jpg", jpg, 0660)
+	t.Logf("Decode return: %v x %v, %v, %v, %v", raw2.Bounds().Dx(), raw2.Bounds().Dy(), raw2.Stride, len(raw2.Pix), err)
+	assert.Equal(t, w, raw2.Bounds().Dx(), "Width same")
+	assert.Equal(t, h, raw2.Bounds().Dy(), "Height same")
+	assert.Equal(t, raw1.Stride, raw2.Stride, "Stride same")
 }

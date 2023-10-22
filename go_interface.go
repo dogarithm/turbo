@@ -12,7 +12,7 @@ func FromImage(src image.Image, allowDeepClone bool) *Image {
 	dst := &Image{}
 	switch v := src.(type) {
 	case *image.RGBA:
-		dst.Width, dst.Height, dst.Stride = v.Rect.Dx(), v.Rect.Dx(), v.Stride
+		dst.Width, dst.Height, dst.Stride = v.Rect.Dx(), v.Rect.Dy(), v.Stride
 		dst.Stride = v.Stride
 		if allowDeepClone {
 			dst.Pixels = v.Pix
@@ -22,7 +22,7 @@ func FromImage(src image.Image, allowDeepClone bool) *Image {
 		}
 		return dst
 	case *image.NRGBA:
-		dst.Width, dst.Height, dst.Stride = v.Rect.Dx(), v.Rect.Dx(), v.Stride
+		dst.Width, dst.Height, dst.Stride = v.Rect.Dx(), v.Rect.Dy(), v.Stride
 		if allowDeepClone {
 			dst.Pixels = v.Pix
 		} else {
@@ -31,7 +31,7 @@ func FromImage(src image.Image, allowDeepClone bool) *Image {
 		}
 		return dst
 	case *image.Gray:
-		dst.Width, dst.Height, dst.Stride = v.Rect.Dx(), v.Rect.Dx(), v.Stride
+		dst.Width, dst.Height, dst.Stride = v.Rect.Dx(), v.Rect.Dy(), v.Stride
 		if allowDeepClone {
 			dst.Pixels = v.Pix
 		} else {
@@ -42,7 +42,7 @@ func FromImage(src image.Image, allowDeepClone bool) *Image {
 	default:
 		nv := image.NewRGBA(src.Bounds())
 		draw.Draw(nv, nv.Bounds(), src, image.Point{}, draw.Src)
-		dst.Width, dst.Height, dst.Stride = nv.Rect.Dx(), nv.Rect.Dx(), nv.Stride
+		dst.Width, dst.Height, dst.Stride = nv.Rect.Dx(), nv.Rect.Dy(), nv.Stride
 	}
 
 	return dst

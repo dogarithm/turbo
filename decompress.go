@@ -7,10 +7,9 @@ package turbo
 import "C"
 import (
 	"image"
-	"image/draw"
 )
 
-func Decompress(encoded []byte) (draw.Image, error) {
+func Decompress(encoded []byte) (*image.RGBA, error) {
 	decoder := C.tjInitDecompress()
 	defer C.tjDestroy(decoder)
 
