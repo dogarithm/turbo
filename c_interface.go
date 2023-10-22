@@ -53,10 +53,3 @@ func makeError(handler C.tjhandle, returnVal C.int) error {
 	str := C.GoString(C.tjGetErrorStr2(handler))
 	return fmt.Errorf("turbojpeg error: %v", str)
 }
-
-type Image struct {
-	Width  int
-	Height int
-	Stride int
-	Pixels []byte
-}

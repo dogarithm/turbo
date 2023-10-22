@@ -1,19 +1,15 @@
 package turbo
 
 import (
+	"image"
+	"image/color"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func MakeRGBA(width, height int) *Image {
-	img := &Image{
-		Width:  width,
-		Stride: width * 4,
-		Height: height,
-		Pixels: make([]byte, width*height*4),
-	}
-	buf := img.Pixels
+func MakeRGBA(width, height int) *image.RGBA {
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	g := byte(0)
 	b := byte(0)
 	p := 0
@@ -21,10 +17,7 @@ func MakeRGBA(width, height int) *Image {
 	for y := 0; y < height; y++ {
 		r := byte(0)
 		for x := 0; x < width; x++ {
-			buf[p] = r
-			buf[p+1] = g
-			buf[p+2] = b
-			buf[p+3] = a
+			img.SetRGBA(x, y, color.RGBA{R: r, G: g, B: b, A: a})
 			r += 3
 			b += 5
 			p += 4

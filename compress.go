@@ -7,6 +7,8 @@ package turbo
 import "C"
 
 import (
+	"image"
+	"image/draw"
 	"unsafe"
 )
 
@@ -26,16 +28,30 @@ func MakeCompressParams(pixelFormat PixelFormat, sampling Sampling, quality int,
 	}
 }
 
-func Compress(img *Image, params CompressParams) ([]byte, error) {
+func Compress(src image.Image, params CompressParams) ([]byte, error) {
+	var width, height, stride int
+	var pix []byte
+
+	switch v := src.(type) {
+	case *image.RGBA:
+		width, height, stride, pix = v.Rect.Dx(), v.Rect.Dy(), v.Stride, v.Pix
+	case *image.NRGBA:
+		width, height, stride, pix = v.Rect.Dx(), v.Rect.Dy(), v.Stride, v.Pix
+	case *image.Gray:
+		width, height, stride, pix = v.Rect.Dx(), v.Rect.Dy(), v.Stride, v.Pix
+	default:
+		nv := image.NewRGBA(src.Bounds())
+		draw.Draw(nv, nv.Bounds(), src, image.Point{}, draw.Src)
+		width, height, stride, pix = nv.Rect.Dx(), nv.Rect.Dy(), nv.Stride, nv.Pix
+	}
+
 	encoder := C.tjInitCompress()
 	defer C.tjDestroy(encoder)
 
 	var outBuf *C.uchar
 	var outBufSize C.ulong
 
-	// int tjCompress2(tjhandle handle, const unsigned char *srcBuf, int width, int pitch, int height, int pixelFormat,
-	// unsigned char **jpegBuf, unsigned long *jpegSize, int jpegSubsamp, int jpegQual, int flags);
-	res := C.tjCompress2(encoder, (*C.uchar)(&img.Pixels[0]), C.int(img.Width), C.int(img.Stride), C.int(img.Height), C.int(params.PixelFormat),
+	res := C.tjCompress2(encoder, (*C.uchar)(&pix[0]), C.int(width), C.int(stride), C.int(height), C.int(params.PixelFormat),
 		&outBuf, &outBufSize, C.int(params.Sampling), C.int(params.Quality), C.int(params.Flags))
 
 	err := makeError(encoder, res)
