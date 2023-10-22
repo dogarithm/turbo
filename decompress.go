@@ -5,8 +5,12 @@ package turbo
 #include <turbojpeg.h>
 */
 import "C"
+import (
+	"image"
+	"image/draw"
+)
 
-func Decompress(encoded []byte) (*Image, error) {
+func Decompress(encoded []byte) (draw.Image, error) {
 	decoder := C.tjInitDecompress()
 	defer C.tjDestroy(decoder)
 
@@ -30,11 +34,10 @@ func Decompress(encoded []byte) (*Image, error) {
 		return nil, err
 	}
 
-	img := &Image{
-		Width:  int(width),
-		Height: int(height),
-		Stride: int(stride),
-		Pixels: outBuf,
+	img := &image.RGBA{
+		Pix:    outBuf,
+		Stride: 4 * int(width),
+		Rect:   image.Rect(0, 0, int(width), int(height)),
 	}
 	return img, nil
 }
